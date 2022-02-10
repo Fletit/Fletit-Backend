@@ -5,3 +5,4 @@ python-decouple==3.6
 SQLAlchemy==1.4.27
 uvicorn==0.17.3
 PyMySQL==1.0.2
+email-validator==1.1.1
