@@ -14,24 +14,28 @@ class DeliveryCreate(_DeliveryBase):
 
 class Delivery(_DeliveryBase):
     id: Optional[int]
-    userId: int
-    courierId: int
+    customerId: int
+    carrierId: int
     dateCreated: datetime
     lastUpdate: datetime
 
     class Config:
         orm_mode = True
 
-class _UserBase(_pydantic.BaseModel):
+class _CustomerBase(_pydantic.BaseModel):
     firstName: str
     lastName: str
     address: str
-    email: str
+    email: _pydantic.EmailStr
 
-class UserCreate(_UserBase):
+class _Login(_pydantic.BaseModel):
+    email: _pydantic.EmailStr
+    password: str
+    role: str
+class CustomerCreate(_CustomerBase):
     password: str
 
-class User(_UserBase):
+class Customer(_CustomerBase):
     id: Optional[int]
     deliveries: List[Delivery] = []
     dateCreated: datetime
@@ -40,16 +44,16 @@ class User(_UserBase):
     class Config:
         orm_mode = True
 
-class _CourierBase(_pydantic.BaseModel):
+class _CarrierBase(_pydantic.BaseModel):
     firstName: str
     lastName: str
     address: str
-    email: str
+    email: _pydantic.EmailStr
 
-class CourierCreate(_CourierBase):
+class CarrierCreate(_CarrierBase):
     password: str
 
-class Courier(_CourierBase):
+class Carrier(_CarrierBase):
     id: Optional[int]
     deliveries: List[Delivery] = []
     dateCreated: datetime

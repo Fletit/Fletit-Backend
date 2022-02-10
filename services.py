@@ -15,53 +15,53 @@ def get_db():
         db.close()
 
 
-def get_user(db: _orm.Session, user_id: int):
-    return db.query(_models.User).filter(_models.User.id == user_id).first()
+def get_customer(db: _orm.Session, customer_id: int):
+    return db.query(_models.Customer).filter(_models.Customer.id == customer_id).first()
 
 
-def get_user_by_email(db: _orm.Session, email: str):
-    return db.query(_models.User).filter(_models.User.email == email).first()
+def get_customer_by_email(db: _orm.Session, email: str):
+    return db.query(_models.Customer).filter(_models.Customer.email == email).first()
 
 
-def get_users(db: _orm.Session, skip: int = 0, limit: int = 100):
-    return db.query(_models.User).offset(skip).limit(limit).all()
+def get_customers(db: _orm.Session, skip: int = 0, limit: int = 100):
+    return db.query(_models.Customer).offset(skip).limit(limit).all()
 
 
-def create_user(db: _orm.Session, user: _schemas.UserCreate):
-    fake_hashed_password = user.password + "thisisnotsecure"
-    db_user = _models.User(firstName=user.firstName, lastName=user.lastName, address=user.address, email=user.email, hashedPassword=fake_hashed_password)
-    db.add(db_user)
+def create_customer(db: _orm.Session, customer: _schemas.CustomerCreate):
+    fake_hashed_password = customer.password + ""
+    db_customer = _models.Customer(firstName=customer.firstName, lastName=customer.lastName, address=customer.address, email=customer.email, hashedPassword=fake_hashed_password)
+    db.add(db_customer)
     db.commit()
-    db.refresh(db_user)
-    return db_user
+    db.refresh(db_customer)
+    return db_customer
 
-def get_courier(db: _orm.Session, courier_id: int):
-    return db.query(_models.Courier).filter(_models.Courier.id == courier_id).first()
-
-
-def get_courier_by_email(db: _orm.Session, email: str):
-    return db.query(_models.Courier).filter(_models.Courier.email == email).first()
+def get_carrier(db: _orm.Session, carrier_id: int):
+    return db.query(_models.Carrier).filter(_models.Carrier.id == carrier_id).first()
 
 
-def get_couriers(db: _orm.Session, skip: int = 0, limit: int = 100):
-    return db.query(_models.Courier).offset(skip).limit(limit).all()
+def get_carrier_by_email(db: _orm.Session, email: str):
+    return db.query(_models.Carrier).filter(_models.Carrier.email == email).first()
 
 
-def create_courier(db: _orm.Session, courier: _schemas.CourierCreate):
-    fake_hashed_password = courier.password + "thisisnotsecure"
-    db_courier = _models.Courier(firstName=courier.firstName, lastName=courier.lastName, address=courier.address, email=courier.email, hashedPassword=fake_hashed_password)
-    db.add(db_courier)
+def get_carriers(db: _orm.Session, skip: int = 0, limit: int = 100):
+    return db.query(_models.Carrier).offset(skip).limit(limit).all()
+
+
+def create_carrier(db: _orm.Session, carrier: _schemas.CarrierCreate):
+    fake_hashed_password = carrier.password + ""
+    db_carrier = _models.Carrier(firstName=carrier.firstName, lastName=carrier.lastName, address=carrier.address, email=carrier.email, hashedPassword=fake_hashed_password)
+    db.add(db_carrier)
     db.commit()
-    db.refresh(db_courier)
-    return db_courier
+    db.refresh(db_carrier)
+    return db_carrier
 
 
 def get_deliveries(db: _orm.Session, skip: int = 0, limit: int = 10):
     return db.query(_models.Delivery).offset(skip).limit(limit).all()
 
 
-def create_delivery(db: _orm.Session, delivery: _schemas.DeliveryCreate, user_id: int, courier_id: int):
-    delivery = _models.Delivery(**delivery.dict(), userId=user_id, courierId = courier_id)
+def create_delivery(db: _orm.Session, delivery: _schemas.DeliveryCreate, customer_id: int, carrier_id: int):
+    delivery = _models.Delivery(**delivery.dict(), customerId=customer_id, carrierId = carrier_id)
     db.add(delivery)
     db.commit()
     db.refresh(delivery)
