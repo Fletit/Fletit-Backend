@@ -117,3 +117,16 @@ def delete_delivery(delivery_id: int, db: _orm.Session = _fastapi.Depends(_servi
 @app.put("/deliveries/{delivery_id}", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Delivery)
 def update_delivery(delivery_id: int, delivery: _schemas.DeliveryCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     return _services.update_delivery(db=db, delivery=delivery, delivery_id=delivery_id)
+
+@app.get("/auth/")
+def authenticate_user(access_token: str = _fastapi.Header(...), db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    try:
+        payload = _auth_handler.decodeJWT(access_token)
+        print(payload)
+    except:
+        payload = None
+    if payload:
+        db_customer = _services.get_customer_by_email(db=db, email=payload["user_id"])
+        return {"access_token": access_token, "user": jsonable_encoder(db_customer)}
+    else:
+        raise _fastapi.HTTPException(status_code=403, detail="Invalid token or expired token.")
