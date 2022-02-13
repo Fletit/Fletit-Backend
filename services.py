@@ -28,8 +28,7 @@ def get_customers(db: _orm.Session, skip: int = 0, limit: int = 100):
 
 
 def create_customer(db: _orm.Session, customer: _schemas.CustomerCreate):
-    fake_hashed_password = customer.password + ""
-    db_customer = _models.Customer(firstName=customer.firstName, lastName=customer.lastName, address=customer.address, email=customer.email, hashedPassword=fake_hashed_password)
+    db_customer = _models.Customer(**customer.dict(), role="CUSTOMER")
     db.add(db_customer)
     db.commit()
     db.refresh(db_customer)
@@ -48,9 +47,17 @@ def get_carriers(db: _orm.Session, skip: int = 0, limit: int = 100):
 
 
 def create_carrier(db: _orm.Session, carrier: _schemas.CarrierCreate):
-    fake_hashed_password = carrier.password + ""
-    db_carrier = _models.Carrier(firstName=carrier.firstName, lastName=carrier.lastName, address=carrier.address, email=carrier.email, hashedPassword=fake_hashed_password)
+    db_carrier = _models.Carrier(**carrier.dict(), role="CARRIER")
     db.add(db_carrier)
+    db.commit()
+    db.refresh(db_carrier)
+    return db_carrier
+
+def update_carrier(db: _orm.Session, carrier_id: int, carrier: _schemas.Carrier):
+    db_carrier = get_carrier(db=db, carrier_id=carrier_id)
+    db_carrier.carModel = carrier.carModel
+    db_carrier.carPlate = carrier.carPlate
+    db_carrier.carrierType = carrier.carrierType
     db.commit()
     db.refresh(db_carrier)
     return db_carrier

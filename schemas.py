@@ -1,8 +1,41 @@
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, date
 import pydantic as _pydantic
 
+class _CommentBase(_pydantic.BaseModel):
+    message: str
+    rating: float
 
+class CommentCreate(_CommentBase):
+    pass
+
+class Comment(_CommentBase):
+    id: Optional[int]
+    customerId: int
+    carrierId: int
+    dateCreated: datetime
+    lastUpdate: datetime
+
+    class Config:
+        orm_mode = True
+class _ProductBase(_pydantic.BaseModel):
+    height: str
+    width: str
+    large: str
+    weight: str
+    isFragile: bool
+class ProductCreate(_ProductBase):
+    pass
+
+class Product(_ProductBase):
+    id: Optional[int]
+    deliveryId: int
+    image: str
+    dateCreated: datetime
+    lastUpdate: datetime
+
+    class Config:
+        orm_mode = True
 class _DeliveryBase(_pydantic.BaseModel):
     originAddress: str
     destinationAddress: str
@@ -16,6 +49,7 @@ class Delivery(_DeliveryBase):
     id: Optional[int]
     customerId: int
     carrierId: int
+    products: List[Product] = []
     dateCreated: datetime
     lastUpdate: datetime
 
@@ -25,7 +59,7 @@ class Delivery(_DeliveryBase):
 class _CustomerBase(_pydantic.BaseModel):
     firstName: str
     lastName: str
-    address: str
+    birthdate: date
     email: _pydantic.EmailStr
 
 class _Login(_pydantic.BaseModel):
@@ -37,7 +71,10 @@ class CustomerCreate(_CustomerBase):
 
 class Customer(_CustomerBase):
     id: Optional[int]
+    address: Optional[str]
+    profilePic: Optional[str]
     deliveries: List[Delivery] = []
+    comments: List[Comment] = []
     dateCreated: datetime
     lastUpdate: datetime
 
@@ -47,7 +84,7 @@ class Customer(_CustomerBase):
 class _CarrierBase(_pydantic.BaseModel):
     firstName: str
     lastName: str
-    address: str
+    birthdate: date
     email: _pydantic.EmailStr
 
 class CarrierCreate(_CarrierBase):
@@ -55,7 +92,15 @@ class CarrierCreate(_CarrierBase):
 
 class Carrier(_CarrierBase):
     id: Optional[int]
+    address: Optional[str]
+    profilePic: Optional[str]
+    carModel: str
+    carPlate: str
+    carrierType: str
+    helpers: int
+    rating: float
     deliveries: List[Delivery] = []
+    comments: List[Comment] = []
     dateCreated: datetime
     lastUpdate: datetime
 

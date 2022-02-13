@@ -29,7 +29,7 @@ async def login(user: _schemas._Login, db: _orm.Session = _fastapi.Depends(_serv
     else:
         db_user = _services.get_carrier_by_email(db=db, email=user.email)
 
-    if db_user and db_user.hashedPassword == user.password:
+    if db_user and db_user.password == user.password:
         return _auth_handler.signJWT(user.email, jsonable_encoder(db_user))
     else:
         raise _fastapi.HTTPException(
