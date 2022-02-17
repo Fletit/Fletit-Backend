@@ -5,14 +5,25 @@ import pydantic as _pydantic
 class _CommentBase(_pydantic.BaseModel):
     message: str
     rating: float
-
-class CommentCreate(_CommentBase):
-    pass
-
-class Comment(_CommentBase):
-    id: Optional[int]
     customerId: int
     carrierId: int
+class CommentCreate(_CommentBase):
+    pass
+class Comment(_CommentBase):
+    id: Optional[int]
+    dateCreated: datetime
+    lastUpdate: datetime
+
+    class Config:
+        orm_mode = True
+class _OfferBase(_pydantic.BaseModel):
+    deliveryId: int
+    carrierId: int
+    price: float
+class OfferCreate(_OfferBase):
+    pass
+class Offer(_OfferBase):
+    id: Optional[int]
     dateCreated: datetime
     lastUpdate: datetime
 
@@ -24,13 +35,12 @@ class _ProductBase(_pydantic.BaseModel):
     large: str
     weight: str
     isFragile: bool
+    deliveryId: int
 class ProductCreate(_ProductBase):
     pass
-
 class Product(_ProductBase):
     id: Optional[int]
-    deliveryId: int
-    image: str
+    image: Optional[str]
     dateCreated: datetime
     lastUpdate: datetime
 
@@ -52,12 +62,12 @@ class Delivery(_DeliveryBase):
     carrierId: Optional[int]
     price: Optional[float]
     products: List[Product] = []
+    offers: List[Offer] = []
     dateCreated: datetime
     lastUpdate: datetime
 
     class Config:
         orm_mode = True
-
 class _CustomerBase(_pydantic.BaseModel):
     firstName: str
     lastName: str
@@ -96,13 +106,14 @@ class Carrier(_CarrierBase):
     id: Optional[int]
     address: Optional[str]
     profilePic: Optional[str]
-    carModel: str
-    carPlate: str
-    carrierType: str
-    helpers: int
-    rating: float
+    carModel: Optional[str]
+    carPlate: Optional[str]
+    carrierType: Optional[str]
+    helpers: Optional[int]
+    rating: Optional[float]
     deliveries: List[Delivery] = []
     comments: List[Comment] = []
+    offers: List[Offer] = []
     dateCreated: datetime
     lastUpdate: datetime
 

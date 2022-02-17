@@ -84,7 +84,7 @@ def get_delivery_by_customer_id(db: _orm.Session, customer_id: int):
 def get_delivery_by_carrier_id(db: _orm.Session, carrier_id: int):
     return db.query(_models.Delivery).filter(_models.Delivery.carrierId == carrier_id).all()
 
-def delete_post(db: _orm.Session, delivery_id: int):
+def delete_delivery(db: _orm.Session, delivery_id: int):
     db.query(_models.Delivery).filter(_models.Delivery.id == delivery_id).delete()
     db.commit()
 
@@ -96,3 +96,20 @@ def update_delivery(db: _orm.Session, delivery_id: int, delivery: _schemas.Deliv
     db.commit()
     db.refresh(db_delivery)
     return db_delivery
+
+def get_offers(db: _orm.Session, skip: int = 0, limit: int = 10):
+    return db.query(_models.Offer).offset(skip).limit(limit).all()
+
+def create_offer(db: _orm.Session, offer: _schemas.OfferCreate):
+    offer = _models.Offer(**offer.dict())
+    db.add(offer)
+    db.commit()
+    db.refresh(offer)
+    return offer
+
+def get_offer(db: _orm.Session, offer_id: int):
+    return db.query(_models.Offer).filter(_models.Offer.id == offer_id).first()
+
+def delete_offer(db: _orm.Session, offer_id: int):
+    db.query(_models.Offer).filter(_models.Offer.id == offer_id).delete()
+    db.commit()

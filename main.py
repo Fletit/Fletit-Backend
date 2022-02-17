@@ -135,3 +135,32 @@ def get_deliveries_by_customer_id(customer_id: int, db: _orm.Session = _fastapi.
 def get_deliveries_by_carrier_id(carrier_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     deliveries = _services.get_delivery_by_carrier_id(db=db, carrier_id=carrier_id)
     return deliveries
+
+@app.post("/offers/", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Offer)
+def create_offer(offer: _schemas.OfferCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    db_carrier = _services.get_carrier(db=db, carrier_id=offer.carrierId)
+    if db_carrier is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this carrier does not exist"
+        )
+    db_delivery = _services.get_delivery(db=db, delivery_id=offer.deliveryId)
+    if db_delivery is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this delivery does not exist"
+        ) 
+    return _services.create_offer(db=db, offer=offer)
+
+@app.delete("/offers/{offer_id}", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())])
+def delete_offer(offer_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    _services.delete_offer(db=db, offer_id=offer_id)
+    return {"message": f"successfully deleted offer with id: {offer_id}"}
+
+@app.get("/offers/{offer_id}", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Offer)
+def read_offer(offer_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    offer = _services.get_offer(db=db, offer_id=offer_id)
+    if offer is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this offer does not exist"
+        )
+
+    return offer
