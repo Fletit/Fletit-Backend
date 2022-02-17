@@ -11,6 +11,8 @@ class Delivery(_database.Base):
     destinationAddress = _sql.Column(_sql.String)
     state = _sql.Column(_sql.String)
     price = _sql.Column(_sql.Float)
+    deliveryType = _sql.Column(_sql.String)
+    deliveryDate = _sql.Column(_sql.DateTime)
     customerId = _sql.Column(_sql.Integer, _sql.ForeignKey("customers.id"))
     carrierId = _sql.Column(_sql.Integer, _sql.ForeignKey("carriers.id"))
     dateCreated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)

@@ -82,12 +82,7 @@ def create_delivery(delivery: _schemas.DeliveryCreate, db: _orm.Session = _fasta
     if db_customer is None:
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this customer does not exist"
-        )
-    db_carrier = _services.get_carrier(db=db, carrier_id=delivery.carrierId)
-    if db_carrier is None:
-        raise _fastapi.HTTPException(
-            status_code=404, detail="sorry this carrier does not exist"
-        )    
+        ) 
     return _services.create_delivery(db=db, delivery=delivery)
 
 
