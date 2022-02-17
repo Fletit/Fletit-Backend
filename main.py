@@ -77,18 +77,18 @@ def read_carrier(carrier_id: int, db: _orm.Session = _fastapi.Depends(_services.
 
 
 @app.post("/deliveries/", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Delivery)
-def create_delivery(customer_id: int, carrier_id: int, delivery: _schemas.DeliveryCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
-    db_customer = _services.get_customer(db=db, customer_id=customer_id)
+def create_delivery(delivery: _schemas.DeliveryCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    db_customer = _services.get_customer(db=db, customer_id=delivery.customerId)
     if db_customer is None:
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this customer does not exist"
         )
-    db_carrier = _services.get_carrier(db=db, carrier_id=carrier_id)
+    db_carrier = _services.get_carrier(db=db, carrier_id=delivery.carrierId)
     if db_carrier is None:
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this carrier does not exist"
         )    
-    return _services.create_delivery(db=db, delivery=delivery, customer_id=customer_id, carrier_id=carrier_id)
+    return _services.create_delivery(db=db, delivery=delivery)
 
 
 @app.get("/deliveries/", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=List[_schemas.Delivery])
@@ -130,3 +130,13 @@ def authenticate_user(access_token: str = _fastapi.Header(...), db: _orm.Session
         return {"access_token": access_token, "user": jsonable_encoder(db_customer)}
     else:
         raise _fastapi.HTTPException(status_code=403, detail="Invalid token or expired token.")
+
+@app.get("/getDeliveriesByCustomerId", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())])
+def get_deliveries_by_customer_id(customer_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    deliveries = _services.get_delivery_by_customer_id(db=db, customer_id=customer_id)
+    return deliveries
+
+@app.get("/getDeliveriesByCarrierId", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())])
+def get_deliveries_by_carrier_id(carrier_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    deliveries = _services.get_delivery_by_carrier_id(db=db, carrier_id=carrier_id)
+    return deliveries

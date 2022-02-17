@@ -37,6 +37,8 @@ class Product(_ProductBase):
     class Config:
         orm_mode = True
 class _DeliveryBase(_pydantic.BaseModel):
+    customerId: int
+    carrierId: int
     originAddress: str
     destinationAddress: str
     state: str = "Started"
@@ -47,8 +49,6 @@ class DeliveryCreate(_DeliveryBase):
 
 class Delivery(_DeliveryBase):
     id: Optional[int]
-    customerId: int
-    carrierId: int
     products: List[Product] = []
     dateCreated: datetime
     lastUpdate: datetime

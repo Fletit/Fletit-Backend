@@ -67,8 +67,8 @@ def get_deliveries(db: _orm.Session, skip: int = 0, limit: int = 10):
     return db.query(_models.Delivery).offset(skip).limit(limit).all()
 
 
-def create_delivery(db: _orm.Session, delivery: _schemas.DeliveryCreate, customer_id: int, carrier_id: int):
-    delivery = _models.Delivery(**delivery.dict(), customerId=customer_id, carrierId = carrier_id)
+def create_delivery(db: _orm.Session, delivery: _schemas.DeliveryCreate):
+    delivery = _models.Delivery(**delivery.dict())
     db.add(delivery)
     db.commit()
     db.refresh(delivery)
@@ -78,6 +78,11 @@ def create_delivery(db: _orm.Session, delivery: _schemas.DeliveryCreate, custome
 def get_delivery(db: _orm.Session, delivery_id: int):
     return db.query(_models.Delivery).filter(_models.Delivery.id == delivery_id).first()
 
+def get_delivery_by_customer_id(db: _orm.Session, customer_id: int):
+    return db.query(_models.Delivery).filter(_models.Delivery.customerId == customer_id).all()
+
+def get_delivery_by_carrier_id(db: _orm.Session, carrier_id: int):
+    return db.query(_models.Delivery).filter(_models.Delivery.carrierId == carrier_id).all()
 
 def delete_post(db: _orm.Session, delivery_id: int):
     db.query(_models.Delivery).filter(_models.Delivery.id == delivery_id).delete()

@@ -18,7 +18,8 @@ class Delivery(_database.Base):
 
     owner = _orm.relationship("Customer", back_populates="deliveries")
     carrier = _orm.relationship("Carrier", back_populates="deliveries")
-    products = _orm.relationship("Product", back_populates="delivery")
+    products = _orm.relationship("Product", cascade="all, delete-orphan", uselist=True, back_populates="delivery")
+    
 class Product(_database.Base):
     __tablename__ = "products"
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)
@@ -47,8 +48,8 @@ class Customer(_database.Base):
     dateCreated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     lastUpdate = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
 
-    deliveries = _orm.relationship("Delivery", back_populates="owner")
-    comments = _orm.relationship("Comment", back_populates="owner")
+    deliveries = _orm.relationship("Delivery", uselist=True, back_populates="owner")
+    comments = _orm.relationship("Comment", cascade="all, delete-orphan", uselist=True, back_populates="owner")
 class Carrier(_database.Base):
     __tablename__ = "carriers"
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)
@@ -68,17 +69,16 @@ class Carrier(_database.Base):
     dateCreated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     lastUpdate = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
 
-    deliveries = _orm.relationship("Delivery", back_populates="carrier")
-    comments = _orm.relationship("Comment", back_populates="carrier")
+    deliveries = _orm.relationship("Delivery", uselist=True, back_populates="carrier")
+    comments = _orm.relationship("Comment", cascade="all, delete-orphan", uselist=True, back_populates="carrier")
 class Comment(_database.Base):
     __tablename__ = "comments"
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)
     customerId = _sql.Column(_sql.Integer, _sql.ForeignKey("customers.id"))
+    owner = _orm.relationship("Customer", back_populates="comments")
     carrierId = _sql.Column(_sql.Integer, _sql.ForeignKey("carriers.id"))
+    carrier = _orm.relationship("Carrier", back_populates="comments")
     message = _sql.Column(_sql.String)
     rating = _sql.Column(_sql.Float)
     dateCreated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     lastUpdate = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
-
-    owner = _orm.relationship("Customer", back_populates="comments")
-    carrier = _orm.relationship("Carrier", back_populates="comments")
