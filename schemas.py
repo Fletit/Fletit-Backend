@@ -34,13 +34,13 @@ class _ProductBase(_pydantic.BaseModel):
     width: str
     large: str
     weight: str
-    isFragile: bool
+    isFragile: str
+    images: str
     deliveryId: int
 class ProductCreate(_ProductBase):
     pass
 class Product(_ProductBase):
     id: Optional[int]
-    image: Optional[str]
     dateCreated: datetime
     lastUpdate: datetime
 
@@ -51,6 +51,7 @@ class _DeliveryBase(_pydantic.BaseModel):
     originAddress: str
     destinationAddress: str
     state: str
+    products: List[Product]
     deliveryType: str
     deliveryDate: datetime
 
@@ -61,7 +62,6 @@ class Delivery(_DeliveryBase):
     id: Optional[int]
     carrierId: Optional[int]
     price: Optional[float]
-    products: List[Product] = []
     offers: List[Offer] = []
     dateCreated: datetime
     lastUpdate: datetime
@@ -84,6 +84,7 @@ class CustomerCreate(_CustomerBase):
 class Customer(_CustomerBase):
     id: Optional[int]
     address: Optional[str]
+    cellphone: Optional[str]
     profilePic: Optional[str]
     deliveries: List[Delivery] = []
     comments: List[Comment] = []
@@ -105,6 +106,7 @@ class CarrierCreate(_CarrierBase):
 class Carrier(_CarrierBase):
     id: Optional[int]
     address: Optional[str]
+    cellphone: Optional[str]
     profilePic: Optional[str]
     carModel: Optional[str]
     carPlate: Optional[str]

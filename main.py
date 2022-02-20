@@ -66,6 +66,15 @@ def read_customer(customer_id: int, db: _orm.Session = _fastapi.Depends(_service
         )
     return db_customer
 
+@app.put("/customers/{customer_id}", response_model=_schemas.Customer)
+def update_customer(customer_id: int, customer: _schemas.Customer, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    db_customer = _services.get_customer(db=db, customer_id=customer_id)
+    if db_customer is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this customer does not exist"
+        )
+    return _services.update_customer(db=db, customer=customer, db_customer=db_customer)
+
 @app.get("/carriers/{carrier_id}", response_model=_schemas.Carrier)
 def read_carrier(carrier_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     db_carrier = _services.get_carrier(db=db, carrier_id=carrier_id)
@@ -75,6 +84,14 @@ def read_carrier(carrier_id: int, db: _orm.Session = _fastapi.Depends(_services.
         )
     return db_carrier
 
+@app.put("/carriers/{carrier_id}", response_model=_schemas.Carrier)
+def update_carrier(carrier_id: int, carrier: _schemas.Carrier, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    db_carrier = _services.get_carrier(db=db, carrier_id=carrier_id)
+    if db_carrier is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this carrier does not exist"
+        )
+    return _services.update_carrier(db=db, carrier=carrier, db_carrier=db_carrier)
 
 @app.post("/deliveries/", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Delivery)
 def create_delivery(delivery: _schemas.DeliveryCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
@@ -110,8 +127,13 @@ def delete_delivery(delivery_id: int, db: _orm.Session = _fastapi.Depends(_servi
 
 
 @app.put("/deliveries/{delivery_id}", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Delivery)
-def update_delivery(delivery_id: int, delivery: _schemas.DeliveryCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
-    return _services.update_delivery(db=db, delivery=delivery, delivery_id=delivery_id)
+def update_delivery(delivery_id: int, delivery: _schemas.Delivery, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    db_delivery = _services.get_delivery(db=db, delivery_id=delivery_id)
+    if db_delivery is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this delivery does not exist"
+        )
+    return _services.update_delivery(db=db, delivery=delivery, db_delivery=db_delivery)
 
 @app.get("/auth/")
 def authenticate_user(access_token: str = _fastapi.Header(...), db: _orm.Session = _fastapi.Depends(_services.get_db)):

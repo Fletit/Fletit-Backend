@@ -34,6 +34,13 @@ def create_customer(db: _orm.Session, customer: _schemas.CustomerCreate):
     db.refresh(db_customer)
     return db_customer
 
+def update_customer(db: _orm.Session, customer: _schemas.Customer, db_customer: _schemas.Customer):
+    for var, value in vars(customer).items():
+        setattr(db_customer, var, value) if value else None
+    db.commit()
+    db.refresh(db_customer)
+    return db_customer
+
 def get_carrier(db: _orm.Session, carrier_id: int):
     return db.query(_models.Carrier).filter(_models.Carrier.id == carrier_id).first()
 
@@ -53,11 +60,9 @@ def create_carrier(db: _orm.Session, carrier: _schemas.CarrierCreate):
     db.refresh(db_carrier)
     return db_carrier
 
-def update_carrier(db: _orm.Session, carrier_id: int, carrier: _schemas.Carrier):
-    db_carrier = get_carrier(db=db, carrier_id=carrier_id)
-    db_carrier.carModel = carrier.carModel
-    db_carrier.carPlate = carrier.carPlate
-    db_carrier.carrierType = carrier.carrierType
+def update_carrier(db: _orm.Session, carrier: _schemas.Carrier, db_carrier: _schemas.Carrier):
+    for var, value in vars(carrier).items():
+        setattr(db_carrier, var, value) if value else None
     db.commit()
     db.refresh(db_carrier)
     return db_carrier
@@ -89,10 +94,9 @@ def delete_delivery(db: _orm.Session, delivery_id: int):
     db.commit()
 
 
-def update_delivery(db: _orm.Session, delivery_id: int, delivery: _schemas.DeliveryCreate):
-    db_delivery = get_delivery(db=db, delivery_id=delivery_id)
-    db_delivery.state = delivery.state
-    db_delivery.price = delivery.price
+def update_delivery(db: _orm.Session, delivery: _schemas.Delivery, db_delivery: _schemas.Delivery):
+    for var, value in vars(delivery).items():
+        setattr(db_delivery, var, value) if value else None
     db.commit()
     db.refresh(db_delivery)
     return db_delivery
