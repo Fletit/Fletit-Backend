@@ -30,13 +30,22 @@ class Offer(_OfferBase):
     class Config:
         orm_mode = True
 class _ProductBase(_pydantic.BaseModel):
+    images: str
+    deliveryId: int
+
+class _NormalProduct(_ProductBase):
     height: str
     width: str
     large: str
     weight: str
     isFragile: str
-    images: str
-    deliveryId: int
+
+class _AnimalProduct(_ProductBase):
+    age: str
+    animalType: str
+    breed: str
+    name: str
+    weight: str
 class ProductCreate(_ProductBase):
     pass
 class Product(_ProductBase):
