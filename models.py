@@ -31,55 +31,28 @@ class Delivery(_database.Base):
 
     owner = _orm.relationship("Customer", back_populates="deliveries")
     carrier = _orm.relationship("Carrier", back_populates="deliveries")
-    normalProducts = _orm.relationship("NormalProduct", cascade="all, delete-orphan", uselist=True, back_populates="delivery")
-    animalProducts = _orm.relationship("AnimalProduct", cascade="all, delete-orphan", uselist=True, back_populates="delivery")
-    motoProducts = _orm.relationship("MotoProduct", cascade="all, delete-orphan", uselist=True, back_populates="delivery")
+    products = _orm.relationship("Product", cascade="all, delete-orphan", uselist=True, back_populates="delivery")
     offers = _orm.relationship("Offer", cascade="all, delete-orphan", uselist=True, back_populates="delivery")
     
-class NormalProduct(_database.Base):
-    __tablename__ = "normal_products"
+class Product(_database.Base):
+    __tablename__ = "products"
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)
     deliveryId = _sql.Column(_sql.Integer, _sql.ForeignKey("deliveries.id"))
+    productType = _sql.Column(_sql.String(50))
     height = _sql.Column(_sql.String(50))
     width = _sql.Column(_sql.String(50))
     large = _sql.Column(_sql.String(50))
-    weight = _sql.Column(_sql.String(50))
-    isFragile = _sql.Column(_sql.String(10))
-    images = _sql.Column(_sql.String(2000))
-    dateCreated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
-    lastUpdate = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
-
-    delivery = _orm.relationship("Delivery", back_populates="normalProducts")
-
-class AnimalProduct(_database.Base):
-    __tablename__ = "animal_products"
-    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
-    deliveryId = _sql.Column(_sql.Integer, _sql.ForeignKey("deliveries.id"))
     age = _sql.Column(_sql.Integer)
     animalType = _sql.Column(_sql.String(255))
     breed = _sql.Column(_sql.String(255))
     name = _sql.Column(_sql.String(255))
     weight = _sql.Column(_sql.String(50))
-    images = _sql.Column(_sql.String(2000))
-    dateCreated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
-    lastUpdate = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
-
-    delivery = _orm.relationship("Delivery", back_populates="animalProducts")
-
-class MotoProduct(_database.Base):
-    __tablename__ = "moto_products"
-    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
-    deliveryId = _sql.Column(_sql.Integer, _sql.ForeignKey("deliveries.id"))
-    height = _sql.Column(_sql.String(50))
-    width = _sql.Column(_sql.String(50))
-    large = _sql.Column(_sql.String(50))
-    weight = _sql.Column(_sql.String(50))
     isFragile = _sql.Column(_sql.String(10))
     images = _sql.Column(_sql.String(2000))
     dateCreated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     lastUpdate = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
 
-    delivery = _orm.relationship("Delivery", back_populates="motoProducts")
+    delivery = _orm.relationship("Delivery", back_populates="products")
 class Customer(_database.Base):
     __tablename__ = "customers"
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)

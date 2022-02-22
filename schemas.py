@@ -30,48 +30,22 @@ class Offer(_OfferBase):
     class Config:
         orm_mode = True
 
-class _NormalProductBase(_pydantic.BaseModel):
-    height: str
-    width: str
-    large: str
-    weight: str
-    isFragile: str
+class _ProductBase(_pydantic.BaseModel):
+    productType: Optional[str]
+    height: Optional[str]
+    width: Optional[str]
+    large: Optional[str]
+    age: Optional[str]
+    animalType: Optional[str]
+    breed: Optional[str]
+    name: Optional[str]
+    weight: Optional[str]
+    isFragile: Optional[str]
     images: str
 
-class NormalProductCreate(_NormalProductBase):
+class ProductCreate(_ProductBase):
     pass
-class NormalProduct(_NormalProductBase):
-    id: Optional[int]
-    dateCreated: datetime
-    lastUpdate: datetime
-    class Config:
-        orm_mode = True
-class _AnimalProductBase(_pydantic.BaseModel):
-    age: str
-    animalType: str
-    breed: str
-    name: str
-    weight: str
-    images: str
-class AnimalProductCreate(_AnimalProductBase):
-    pass
-class AnimalProduct(_AnimalProductBase):
-    id: Optional[int]
-    dateCreated: datetime
-    lastUpdate: datetime
-    class Config:
-        orm_mode = True
-
-class _MotoProductBase(_pydantic.BaseModel):
-    height: str
-    width: str
-    large: str
-    weight: str
-    isFragile: str
-    images: str
-class MotoProductCreate(_MotoProductBase):
-    pass
-class MotoProduct(_MotoProductBase):
+class Product(_ProductBase):
     id: Optional[int]
     dateCreated: datetime
     lastUpdate: datetime
@@ -83,9 +57,7 @@ class _DeliveryBase(_pydantic.BaseModel):
     originAddress: str
     destinationAddress: str
     state: str
-    normalProducts: Optional[List[NormalProduct]] = []
-    animalProducts: Optional[List[AnimalProduct]] = []
-    motoProducts: Optional[List[MotoProduct]] = []
+    products: List[Product] = []
     deliveryType: str
     deliveryDate: datetime
 
