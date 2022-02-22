@@ -73,12 +73,12 @@ def get_deliveries(db: _orm.Session, skip: int = 0, limit: int = 10):
 
 
 def create_delivery(db: _orm.Session, delivery: _schemas.DeliveryCreate):
-    products = []
-    for product in delivery.products:
-        new_product = _models.Product(**product.dict())
-        products.append(new_product)
+    #products = []
+    #for product in delivery.products:
+    #    new_product = _models.Product(**product.dict())
+    #    products.append(new_product)
     delivery = _models.Delivery(originAddress=delivery.originAddress, destinationAddress=delivery.destinationAddress, customerId=delivery.customerId, 
-    state=delivery.state, deliveryType=delivery.deliveryType, deliveryDate=delivery.deliveryDate, products=products)
+    state=delivery.state, deliveryType=delivery.deliveryType, deliveryDate=delivery.deliveryDate, products=delivery.products)
     db.add(delivery)
     db.commit()
     db.refresh(delivery)

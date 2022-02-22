@@ -57,7 +57,7 @@ class _DeliveryBase(_pydantic.BaseModel):
     originAddress: str
     destinationAddress: str
     state: str
-    products: List[Product] = []
+    products: str
     deliveryType: str
     deliveryDate: datetime
 
