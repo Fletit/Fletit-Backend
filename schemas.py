@@ -86,12 +86,12 @@ class _Login(_pydantic.BaseModel):
     role: str
 class CustomerCreate(_CustomerBase):
     password: str
+    profilePic: str = "https://www.softzone.es/app/uploads/2018/04/guest.png"
 
 class Customer(_CustomerBase):
     id: Optional[int]
     address: Optional[str]
     cellphone: Optional[str]
-    profilePic: Optional[str]
     deliveries: List[Delivery] = []
     comments: List[Comment] = []
     dateCreated: datetime
@@ -108,12 +108,12 @@ class _CarrierBase(_pydantic.BaseModel):
 
 class CarrierCreate(_CarrierBase):
     password: str
+    profilePic: str = "https://www.softzone.es/app/uploads/2018/04/guest.png"
 
 class Carrier(_CarrierBase):
     id: Optional[int]
     address: Optional[str]
     cellphone: Optional[str]
-    profilePic: Optional[str]
     carModel: Optional[str]
     carPlate: Optional[str]
     carrierType: Optional[str]
