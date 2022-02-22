@@ -73,7 +73,21 @@ def get_deliveries(db: _orm.Session, skip: int = 0, limit: int = 10):
 
 
 def create_delivery(db: _orm.Session, delivery: _schemas.DeliveryCreate):
-    delivery = _models.Delivery(**delivery.dict())
+    normalProducts = []
+    for normalProduct in delivery.normalProducts:
+        product = _models.NormalProduct(**normalProduct.dict())
+        normalProducts.append(product)
+    animalProducts = []
+    for animalProduct in delivery.animalProducts:
+        product = _models.AnimalProduct(**animalProduct.dict())
+        animalProducts.append(product)    
+    motoProducts = []
+    for motoProduct in delivery.motoProducts:
+        product = _models.MotoProduct(**motoProduct.dict())
+        motoProducts.append(product)    
+    delivery = _models.Delivery(originAddress=delivery.originAddress, destinationAddress=delivery.destinationAddress, customerId=delivery.customerId, 
+    state=delivery.state, deliveryType=delivery.deliveryType, deliveryDate=delivery.deliveryDate, normalProducts=normalProducts, 
+    animalProducts=animalProducts, motoProducts=motoProducts)
     db.add(delivery)
     db.commit()
     db.refresh(delivery)

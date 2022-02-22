@@ -29,38 +29,63 @@ class Offer(_OfferBase):
 
     class Config:
         orm_mode = True
-class _ProductBase(_pydantic.BaseModel):
-    images: str
-    deliveryId: int
 
-class _NormalProduct(_ProductBase):
+class _NormalProductBase(_pydantic.BaseModel):
     height: str
     width: str
     large: str
     weight: str
     isFragile: str
+    images: str
 
-class _AnimalProduct(_ProductBase):
+class NormalProductCreate(_NormalProductBase):
+    pass
+class NormalProduct(_NormalProductBase):
+    id: Optional[int]
+    dateCreated: datetime
+    lastUpdate: datetime
+    class Config:
+        orm_mode = True
+class _AnimalProductBase(_pydantic.BaseModel):
     age: str
     animalType: str
     breed: str
     name: str
     weight: str
-class ProductCreate(_ProductBase):
+    images: str
+class AnimalProductCreate(_AnimalProductBase):
     pass
-class Product(_ProductBase):
+class AnimalProduct(_AnimalProductBase):
     id: Optional[int]
     dateCreated: datetime
     lastUpdate: datetime
-
     class Config:
         orm_mode = True
+
+class _MotoProductBase(_pydantic.BaseModel):
+    height: str
+    width: str
+    large: str
+    weight: str
+    isFragile: str
+    images: str
+class MotoProductCreate(_MotoProductBase):
+    pass
+class MotoProduct(_MotoProductBase):
+    id: Optional[int]
+    dateCreated: datetime
+    lastUpdate: datetime
+    class Config:
+        orm_mode = True
+
 class _DeliveryBase(_pydantic.BaseModel):
     customerId: int
     originAddress: str
     destinationAddress: str
     state: str
-    products: List[Product]
+    normalProducts: Optional[List[NormalProduct]] = []
+    animalProducts: Optional[List[AnimalProduct]] = []
+    motoProducts: Optional[List[MotoProduct]] = []
     deliveryType: str
     deliveryDate: datetime
 
