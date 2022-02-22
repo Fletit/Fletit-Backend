@@ -186,3 +186,27 @@ def read_offer(offer_id: int, db: _orm.Session = _fastapi.Depends(_services.get_
         )
 
     return offer
+
+@app.post("/comments/", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Comment)
+def create_comment(comment: _schemas.CommentCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    db_carrier = _services.get_carrier(db=db, carrier_id=comment.carrierId)
+    if db_carrier is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this carrier does not exist"
+        )
+    return _services.create_comment(db=db, comment=comment)
+
+@app.delete("/comments/{comment_id}", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())])
+def delete_comment(comment_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    _services.delete_comment(db=db, comment_id=comment_id)
+    return {"message": f"successfully deleted comment with id: {comment_id}"}
+
+@app.get("/comments/{comment_id}", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Comment)
+def read_comment(comment_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    comment = _services.get_comment(db=db, comment_id=comment_id)
+    if comment is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this comment does not exist"
+        )
+
+    return comment

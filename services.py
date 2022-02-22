@@ -122,3 +122,20 @@ def get_offer(db: _orm.Session, offer_id: int):
 def delete_offer(db: _orm.Session, offer_id: int):
     db.query(_models.Offer).filter(_models.Offer.id == offer_id).delete()
     db.commit()
+
+def get_comments(db: _orm.Session, skip: int = 0, limit: int = 10):
+    return db.query(_models.Comment).offset(skip).limit(limit).all()
+
+def create_comment(db: _orm.Session, comment: _schemas.CommentCreate):
+    comment = _models.Comment(**comment.dict())
+    db.add(comment)
+    db.commit()
+    db.refresh(comment)
+    return comment
+
+def get_comment(db: _orm.Session, comment_id: int):
+    return db.query(_models.Comment).filter(_models.Comment.id == comment_id).first()
+
+def delete_comment(db: _orm.Session, comment_id: int):
+    db.query(_models.Comment).filter(_models.Comment.id == comment_id).delete()
+    db.commit()
