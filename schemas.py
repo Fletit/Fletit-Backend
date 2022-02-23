@@ -86,6 +86,14 @@ class _Login(_pydantic.BaseModel):
     role: str
 class CustomerCreate(_CustomerBase):
     password: str
+
+class _CustomerUpdate(_pydantic.BaseModel):
+    firstName: Optional[str]
+    lastName: Optional[str]
+    birthdate: Optional[date]
+    email: Optional[_pydantic.EmailStr]
+    profilePic: Optional[str]
+    lastUpdate: datetime
 class Customer(_CustomerBase):
     id: Optional[int]
     address: Optional[str]

@@ -67,7 +67,7 @@ def read_customer(customer_id: int, db: _orm.Session = _fastapi.Depends(_service
     return db_customer
 
 @app.put("/customers/{customer_id}", response_model=_schemas.Customer)
-def update_customer(customer_id: int, customer: _schemas.Customer, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+def update_customer(customer_id: int, customer: _schemas._CustomerUpdate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     db_customer = _services.get_customer(db=db, customer_id=customer_id)
     if db_customer is None:
         raise _fastapi.HTTPException(
@@ -204,8 +204,19 @@ def accept_offer(offer_id: int, db: _orm.Session = _fastapi.Depends(_services.ge
         ) 
     updatedDelivery = db_delivery
     updatedDelivery.price = offer.price
-    updatedDelivery.state = "ACCEPT"
+    updatedDelivery.state = "ACCEPTED"
     updatedDelivery.carrierId = offer.carrierId
+    return _services.update_delivery(db=db, delivery=updatedDelivery, db_delivery=db_delivery)
+
+@app.post("/finishDelivery", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())])
+def finish_delivery(delivery_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    db_delivery = _services.get_delivery(db=db, delivery_id=delivery_id)
+    if db_delivery is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this delivery does not exist"
+        ) 
+    updatedDelivery = db_delivery
+    updatedDelivery.state = "ARRIVED"
     return _services.update_delivery(db=db, delivery=updatedDelivery, db_delivery=db_delivery)
 
 @app.post("/comments/", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Comment)
