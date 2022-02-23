@@ -103,18 +103,18 @@ class _CarrierBase(_pydantic.BaseModel):
     lastName: str
     birthdate: date
     email: _pydantic.EmailStr
+    carModel: str
+    carPlate: str
+    carrierType: str
+    profilePic: str = "https://www.softzone.es/app/uploads/2018/04/guest.png"
 
 class CarrierCreate(_CarrierBase):
     password: str
-    profilePic: str = "https://www.softzone.es/app/uploads/2018/04/guest.png"
-    carrierType: str
 
 class Carrier(_CarrierBase):
     id: Optional[int]
     address: Optional[str]
     cellphone: Optional[str]
-    carModel: Optional[str]
-    carPlate: Optional[str]
     helpers: Optional[int]
     rating: Optional[float]
     deliveries: List[Delivery] = []

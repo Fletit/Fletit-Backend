@@ -144,10 +144,10 @@ def authenticate_user(access_token: str = _fastapi.Header(...), db: _orm.Session
     if payload:
         db_user = _services.get_customer_by_email(db=db, email=payload["user_id"])
         if db_user:
-            return {"access_token": access_token, "user": jsonable_encoder(db_customer)}
+            return {"access_token": access_token, "user": jsonable_encoder(db_user)}
         else:
             db_user = _services.get_carrier_by_email(db=db, email=payload["user_id"])
-            return {"access_token": access_token, "user": jsonable_encoder(db_customer)}
+            return {"access_token": access_token, "user": jsonable_encoder(db_user)}
     else:
         raise _fastapi.HTTPException(status_code=403, detail="Invalid token or expired token.")
 
