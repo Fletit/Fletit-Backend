@@ -79,15 +79,13 @@ class _CustomerBase(_pydantic.BaseModel):
     lastName: str
     birthdate: date
     email: _pydantic.EmailStr
-
+    profilePic: str = "https://www.softzone.es/app/uploads/2018/04/guest.png"
 class _Login(_pydantic.BaseModel):
     email: _pydantic.EmailStr
     password: str
     role: str
 class CustomerCreate(_CustomerBase):
     password: str
-    profilePic: str = "https://www.softzone.es/app/uploads/2018/04/guest.png"
-
 class Customer(_CustomerBase):
     id: Optional[int]
     address: Optional[str]
