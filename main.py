@@ -190,6 +190,24 @@ def read_offer(offer_id: int, db: _orm.Session = _fastapi.Depends(_services.get_
 
     return offer
 
+@app.post("/acceptOffer", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())])
+def accept_offer(offer_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    offer = _services.get_offer(db=db, offer_id=offer_id)
+    if offer is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this offer does not exist"
+        )
+    db_delivery = _services.get_delivery(db=db, delivery_id=offer.deliveryId)
+    if db_delivery is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this delivery does not exist"
+        ) 
+    updatedDelivery = db_delivery
+    updatedDelivery.price = offer.price
+    updatedDelivery.state = "ACCEPT"
+    updatedDelivery.carrierId = offer.carrierId
+    return _services.update_delivery(db=db, delivery=updatedDelivery, db_delivery=db_delivery)
+
 @app.post("/comments/", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Comment)
 def create_comment(comment: _schemas.CommentCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     db_carrier = _services.get_carrier(db=db, carrier_id=comment.carrierId)
