@@ -151,14 +151,14 @@ def authenticate_user(access_token: str = _fastapi.Header(...), db: _orm.Session
     else:
         raise _fastapi.HTTPException(status_code=403, detail="Invalid token or expired token.")
 
-@app.get("/getDeliveriesByCustomerId", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())])
-def get_deliveries_by_customer_id(customer_id: int, delivery_type: str, db: _orm.Session = _fastapi.Depends(_services.get_db)):
-    deliveries = _services.get_delivery_by_customer_id(db=db, customer_id=customer_id, delivery_type=delivery_type)
+@app.get("/getDeliveriesByCustomerId", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=List[_schemas.Delivery])
+def get_deliveries_by_customer_id(customer_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    deliveries = _services.get_delivery_by_customer_id(db=db, customer_id=customer_id)
     return deliveries
 
-@app.get("/getDeliveriesByCarrierId", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())])
-def get_deliveries_by_carrier_id(carrier_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
-    deliveries = _services.get_delivery_by_carrier_id(db=db, carrier_id=carrier_id)
+@app.get("/getDeliveriesByCarrierId", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=List[_schemas.Delivery])
+def get_deliveries_by_carrier_id(carrier_id: int, delivery_type: str, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    deliveries = _services.get_delivery_by_carrier_id(db=db, carrier_id=carrier_id, delivery_type=delivery_type)
     return deliveries
 
 @app.post("/offers/", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())], response_model=_schemas.Offer)

@@ -88,11 +88,11 @@ def create_delivery(db: _orm.Session, delivery: _schemas.DeliveryCreate):
 def get_delivery(db: _orm.Session, delivery_id: int):
     return db.query(_models.Delivery).filter(_models.Delivery.id == delivery_id).first()
 
-def get_delivery_by_customer_id(db: _orm.Session, customer_id: int, delivery_type: str):
-    return db.query(_models.Delivery).filter(_models.Delivery.customerId == customer_id, _models.Delivery.deliveryType == delivery_type).all()
+def get_delivery_by_customer_id(db: _orm.Session, customer_id: int):
+    return db.query(_models.Delivery).filter(_models.Delivery.customerId == customer_id).all()
 
-def get_delivery_by_carrier_id(db: _orm.Session, carrier_id: int):
-    return db.query(_models.Delivery).filter(_models.Delivery.carrierId == carrier_id).all()
+def get_delivery_by_carrier_id(db: _orm.Session, carrier_id: int, delivery_type: str):
+    return db.query(_models.Delivery).filter(_models.Delivery.carrierId == carrier_id, _models.Delivery.deliveryType == delivery_type).all()
 
 def delete_delivery(db: _orm.Session, delivery_id: int):
     db.query(_models.Delivery).filter(_models.Delivery.id == delivery_id).delete()
