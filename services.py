@@ -67,6 +67,15 @@ def update_carrier(db: _orm.Session, carrier: _schemas.Carrier, db_carrier: _sch
     db.refresh(db_carrier)
     return db_carrier
 
+def update_carrier_rating(db: _orm.Session, carrier_id: int):
+    carrier = get_carrier(db, carrier_id)
+    comments = get_comment_by_carrier_id(db, carrier_id)
+    rating_sum = 0
+    for comment in comments:
+        rating_sum += comment.rating
+    carrier_new_rating = (rating_sum/len(comments))
+    carrier.rating = carrier_new_rating
+    db.commit()
 
 def get_deliveries(db: _orm.Session, skip: int = 0, limit: int = 10):
     return db.query(_models.Delivery).offset(skip).limit(limit).all()
@@ -135,6 +144,9 @@ def create_comment(db: _orm.Session, comment: _schemas.CommentCreate):
 
 def get_comment(db: _orm.Session, comment_id: int):
     return db.query(_models.Comment).filter(_models.Comment.id == comment_id).first()
+
+def get_comment_by_carrier_id(db: _orm.Session, carrier_id: int):
+    return db.query(_models.Comment).filter(_models.Comment.carrierId == carrier_id).all()
 
 def delete_comment(db: _orm.Session, comment_id: int):
     db.query(_models.Comment).filter(_models.Comment.id == comment_id).delete()

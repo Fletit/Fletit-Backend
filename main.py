@@ -248,7 +248,8 @@ def create_comment(comment: _schemas.CommentCreate, db: _orm.Session = _fastapi.
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this carrier does not exist"
         )
-    return _services.create_comment(db=db, comment=comment)
+    _services.create_comment(db=db, comment=comment)
+    _services.update_carrier_rating(db=db, carrier_id=comment.carrierId)
 
 @app.delete("/comments/{comment_id}", dependencies=[_fastapi.Depends(_auth_bearer.JWTBearer())])
 def delete_comment(comment_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
