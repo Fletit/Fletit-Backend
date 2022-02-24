@@ -34,7 +34,7 @@ def create_customer(db: _orm.Session, customer: _schemas.CustomerCreate):
     db.refresh(db_customer)
     return db_customer
 
-def update_customer(db: _orm.Session, customer: _schemas._CustomerUpdate, db_customer: _schemas.Customer):
+def update_customer(db: _orm.Session, customer: _schemas.Customer, db_customer: _schemas.Customer):
     for var, value in vars(customer).items():
         setattr(db_customer, var, value) if value else None
     db.commit()
